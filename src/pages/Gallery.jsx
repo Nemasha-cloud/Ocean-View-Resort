@@ -25,6 +25,30 @@ const fallbackImages = [
     src: 'https://images.pexels.com/photos/2034335/pexels-photo-2034335.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&dpr=2',
     alt: 'Private beach and palm trees',
   },
+  {
+    src: 'https://images.pexels.com/photos/261156/pexels-photo-261156.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&dpr=2',
+    alt: 'Luxury resort bedroom interior',
+  },
+  {
+    src: 'https://images.pexels.com/photos/189296/pexels-photo-189296.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&dpr=2',
+    alt: 'Tropical beach sunset scene',
+  },
+  {
+    src: 'https://images.pexels.com/photos/271618/pexels-photo-271618.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&dpr=2',
+    alt: 'Resort dining table setup',
+  },
+  {
+    src: 'https://images.pexels.com/photos/1450360/pexels-photo-1450360.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&dpr=2',
+    alt: 'Infinity pool with sea horizon',
+  },
+  {
+    src: 'https://images.pexels.com/photos/1838554/pexels-photo-1838554.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&dpr=2',
+    alt: 'Ocean view balcony seating',
+  },
+  {
+    src: 'https://images.pexels.com/photos/1268871/pexels-photo-1268871.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&dpr=2',
+    alt: 'Palm-lined luxury resort pathway',
+  },
 ];
 
 const Gallery = () => {
