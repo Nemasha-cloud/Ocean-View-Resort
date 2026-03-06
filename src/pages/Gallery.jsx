@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-const galleryImages = [
+const fallbackImages = [
   {
     src: 'https://images.pexels.com/photos/258154/pexels-photo-258154.jpeg?auto=compress&cs=tinysrgb&w=1600&h=1000&dpr=2',
     alt: 'Oceanfront resort view',
@@ -28,6 +28,28 @@ const galleryImages = [
 ];
 
 const Gallery = () => {
+  const [galleryImages, setGalleryImages] = useState(fallbackImages);
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch('/api/gallery');
+        if (!res.ok) return;
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setGalleryImages(data.map(item => ({
+            src: item.imageUrl,
+            alt: item.caption || 'Ocean View Resort gallery image'
+          })));
+        }
+      } catch (err) {
+        // Keep fallback images when API is unavailable.
+      }
+    };
+
+    fetchGallery();
+  }, []);
+
   return (
     <section className="gallery-page">
       <div className="gallery-header">

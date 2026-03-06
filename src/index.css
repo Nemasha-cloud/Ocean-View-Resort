@@ -1059,19 +1059,35 @@ footer a:hover {
 
 /* ========== Admin panel ========== */
 .admin-layout {
+  --admin-bg: #0a1117;
+  --admin-bg-soft: #0f1b25;
+  --admin-surface: #111f2a;
+  --admin-surface-2: #162736;
+  --admin-border: #29465d;
+  --admin-text: #e7f2fb;
+  --admin-muted: #9bb1c3;
+  --admin-accent: #43d3ff;
+  --admin-accent-2: #8de08f;
+  --admin-gold: #f2bf4f;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(67, 211, 255, 0.16), transparent 34%),
+    radial-gradient(circle at 88% 8%, rgba(242, 191, 79, 0.12), transparent 26%),
+    linear-gradient(160deg, var(--admin-bg) 0%, #09131b 55%, #050a10 100%);
+  color: var(--admin-text);
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
 .admin-navbar {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
-  color: white;
-  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(10px);
+  background: linear-gradient(120deg, rgba(9, 23, 34, 0.94), rgba(16, 43, 61, 0.86));
+  color: var(--admin-text);
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.45);
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid rgba(67, 211, 255, 0.2);
 }
 
 .admin-navbar-inner {
@@ -1089,17 +1105,18 @@ footer a:hover {
   font-family: var(--font-heading);
   font-size: 1.35rem;
   font-weight: 600;
-  color: white;
+  color: var(--admin-text);
   text-decoration: none;
+  letter-spacing: 0.3px;
 }
 
 .admin-navbar-logo span {
-  color: var(--color-accent);
+  color: var(--admin-gold);
   font-weight: 500;
 }
 
 .admin-navbar-logo:hover {
-  color: white;
+  color: #f3faff;
   opacity: 0.95;
 }
 
@@ -1112,34 +1129,36 @@ footer a:hover {
 
 .admin-nav-link {
   padding: 0.5rem 0.9rem;
-  border: none;
+  border: 1px solid transparent;
   background: transparent;
-  color: rgba(255, 255, 255, 0.9);
+  color: #c8deee;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   border-radius: 8px;
   font-family: var(--font-body);
-  transition: background var(--transition), color var(--transition);
+  transition: background var(--transition), color var(--transition), border-color var(--transition);
 }
 
 .admin-nav-link:hover {
-  background: rgba(255, 255, 255, 0.12);
-  color: white;
+  background: rgba(67, 211, 255, 0.16);
+  border-color: rgba(67, 211, 255, 0.35);
+  color: #eaf6ff;
 }
 
 .admin-nav-link.active {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
+  background: linear-gradient(120deg, rgba(67, 211, 255, 0.28), rgba(67, 211, 255, 0.12));
+  border-color: rgba(67, 211, 255, 0.4);
+  color: #f6fbff;
 }
 
 .admin-nav-logout {
   padding: 0.45rem 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(67, 211, 255, 0.45);
   background: transparent;
-  color: white;
+  color: #d9eeff;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   border-radius: 8px;
   font-family: var(--font-body);
@@ -1147,9 +1166,9 @@ footer a:hover {
 }
 
 .admin-nav-logout:hover {
-  background: white;
-  color: var(--color-primary);
-  border-color: white;
+  background: rgba(67, 211, 255, 0.2);
+  color: #f4fbff;
+  border-color: rgba(67, 211, 255, 0.7);
 }
 
 .admin-main {
@@ -1158,7 +1177,7 @@ footer a:hover {
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
-  background: var(--color-bg);
+  background: transparent;
 }
 
 .admin-main-header {
@@ -1169,22 +1188,23 @@ footer a:hover {
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(139, 171, 196, 0.28);
 }
 
 .admin-page-title {
   font-family: var(--font-heading);
   font-size: 1.75rem;
   font-weight: 600;
-  color: var(--color-primary);
+  color: #dbf3ff;
   margin: 0;
   border: none;
   padding: 0;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
 .admin-loading-badge {
   font-size: 0.85rem;
-  color: var(--color-text-muted);
+  color: var(--admin-muted);
   font-style: italic;
 }
 
@@ -1198,7 +1218,7 @@ footer a:hover {
 }
 
 .admin-section-desc {
-  color: var(--color-text-muted);
+  color: var(--admin-muted);
   font-size: 0.95rem;
   margin: 0;
   max-width: 560px;
@@ -1216,7 +1236,7 @@ footer a:hover {
 
 .admin-table-empty {
   text-align: center !important;
-  color: var(--color-text-muted);
+  color: var(--admin-muted);
   padding: 2rem !important;
   font-style: italic;
 }
@@ -1230,13 +1250,15 @@ footer a:hover {
 }
 
 .room-availability.available {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(141, 224, 143, 0.2);
+  color: #bbf0bd;
+  border: 1px solid rgba(141, 224, 143, 0.35);
 }
 
 .room-availability.occupied {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(255, 117, 117, 0.2);
+  color: #ffb0b0;
+  border: 1px solid rgba(255, 117, 117, 0.35);
 }
 
 .admin-guide-list {
@@ -1261,17 +1283,118 @@ footer a:hover {
   margin-bottom: 2rem;
 }
 
+/* Overview heading: "Recent Reservations" */
+.stats-grid + h2,
+.admin-diagram-grid + h2 {
+  color: #9fe7ff;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.add-room-card h2 {
+  color: #9fe7ff;
+}
+
+.admin-diagram-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: -0.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.diagram-card {
+  background: linear-gradient(145deg, rgba(13, 25, 35, 0.95), rgba(16, 31, 44, 0.95));
+  border: 1px solid rgba(67, 211, 255, 0.2);
+  border-radius: 14px;
+  padding: 0.95rem 1rem 0.8rem;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.28);
+}
+
+.diagram-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.diagram-head h3 {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #aee9ff;
+  letter-spacing: 0.2px;
+}
+
+.diagram-head span {
+  font-size: 0.74rem;
+  color: #91acc1;
+}
+
+.diagram-line,
+.diagram-bars {
+  height: 96px;
+  border-radius: 10px;
+  padding: 0.55rem;
+  display: grid;
+  align-items: end;
+  gap: 0.45rem;
+  background:
+    repeating-linear-gradient(to top, rgba(157, 203, 234, 0.08) 0 1px, transparent 1px 18px),
+    linear-gradient(160deg, rgba(18, 42, 58, 0.45), rgba(6, 12, 18, 0.5));
+  border: 1px solid rgba(124, 173, 208, 0.2);
+}
+
+.diagram-line {
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.diagram-line span {
+  border-radius: 10px 10px 2px 2px;
+  background: linear-gradient(to top, #19a9db, #83e3ff);
+  box-shadow: 0 0 12px rgba(67, 211, 255, 0.45);
+  min-height: 10%;
+}
+
+.diagram-line.alt span {
+  background: linear-gradient(to top, #2fca7b, #89f0b9);
+  box-shadow: 0 0 12px rgba(70, 214, 129, 0.38);
+}
+
+.diagram-bars {
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.diagram-bars i {
+  display: block;
+  width: 100%;
+  border-radius: 6px 6px 2px 2px;
+  background: linear-gradient(to top, #9354ff, #bc8dff);
+  box-shadow: 0 0 10px rgba(164, 116, 255, 0.36);
+  min-height: 12%;
+}
+
+.diagram-bars.alt i {
+  background: linear-gradient(to top, #e18f1f, #ffd06f);
+  box-shadow: 0 0 10px rgba(242, 191, 79, 0.36);
+}
+
+.diagram-foot {
+  margin: 0.7rem 0 0;
+  color: #c5daea;
+  font-size: 0.78rem;
+}
+
 .stat-card {
-  background: var(--color-surface);
+  background: linear-gradient(145deg, rgba(17, 31, 42, 0.95), rgba(12, 24, 34, 0.95));
   padding: 1.25rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(67, 211, 255, 0.16);
 }
 
 .stat-card h3 {
   font-size: 0.9rem;
-  color: var(--color-text-muted);
+  color: var(--admin-muted);
   margin-bottom: 0.5rem;
   font-family: var(--font-body);
   font-weight: 500;
@@ -1280,15 +1403,15 @@ footer a:hover {
 .stat-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--color-primary);
+  color: #9fe7ff;
 }
 
 .admin-table-container {
-  background: var(--color-surface);
-  border-radius: var(--radius);
+  background: linear-gradient(145deg, rgba(17, 31, 42, 0.95), rgba(11, 22, 31, 0.95));
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(139, 171, 196, 0.2);
   margin-bottom: 1.5rem;
 }
 
@@ -1301,13 +1424,14 @@ footer a:hover {
 .admin-table td {
   padding: 0.85rem 1rem;
   text-align: left;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(139, 171, 196, 0.18);
+  color: #d7e8f5;
 }
 
 .admin-table th {
-  background: var(--color-bg);
+  background: rgba(67, 211, 255, 0.08);
   font-weight: 600;
-  color: var(--color-primary);
+  color: #a8e8ff;
   font-size: 0.9rem;
 }
 
@@ -1316,7 +1440,7 @@ footer a:hover {
 }
 
 .admin-table tr:hover td {
-  background: rgba(13, 61, 71, 0.02);
+  background: rgba(67, 211, 255, 0.1);
 }
 
 .status-badge {
@@ -1327,9 +1451,9 @@ footer a:hover {
   font-weight: 600;
 }
 
-.status-confirmed { background: #d4edda; color: #155724; }
-.status-pending { background: #fff3cd; color: #856404; }
-.status-cancelled { background: #f8d7da; color: #721c24; }
+.status-confirmed { background: rgba(141, 224, 143, 0.2); color: #bbf0bd; border: 1px solid rgba(141, 224, 143, 0.35); }
+.status-pending { background: rgba(242, 191, 79, 0.2); color: #ffd88a; border: 1px solid rgba(242, 191, 79, 0.35); }
+.status-cancelled { background: rgba(255, 117, 117, 0.2); color: #ffb0b0; border: 1px solid rgba(255, 117, 117, 0.35); }
 
 .action-btn {
   padding: 0.4rem 0.85rem;
@@ -1348,8 +1472,8 @@ footer a:hover {
 }
 
 .action-btn.btn-view {
-  background: var(--color-primary);
-  color: white;
+  background: linear-gradient(120deg, #1a7896, #145b79);
+  color: #eaf9ff;
 }
 
 .action-btn.btn-delete {
@@ -1358,19 +1482,61 @@ footer a:hover {
 }
 
 .admin-card {
-  background: var(--color-surface);
+  background: linear-gradient(145deg, rgba(17, 31, 42, 0.95), rgba(12, 24, 34, 0.95));
   padding: 1.5rem;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(67, 211, 255, 0.16);
 }
 
 .add-room-card {
   max-width: 560px;
 }
 
+.add-room-card .form-group label {
+  color: #9fe7ff;
+}
+
+.add-room-card .form-group input,
+.add-room-card .form-group select,
+.add-room-card .form-group textarea {
+  background: rgba(8, 20, 30, 0.92);
+  border: 1px solid rgba(99, 176, 222, 0.45);
+  color: #e8f6ff;
+}
+
+.add-room-card .form-group input::placeholder,
+.add-room-card .form-group textarea::placeholder {
+  color: #89a9be;
+}
+
+.add-room-card .form-group select option {
+  background: #0d1f2b;
+  color: #dff4ff;
+}
+
+.add-room-card .form-group input:focus,
+.add-room-card .form-group select:focus,
+.add-room-card .form-group textarea:focus {
+  border-color: #43d3ff;
+  box-shadow: 0 0 0 3px rgba(67, 211, 255, 0.2);
+}
+
+.admin-gallery-table {
+  margin-top: 1.5rem;
+}
+
+.admin-gallery-thumb {
+  width: 74px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid rgba(67, 211, 255, 0.35);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
 .add-room-intro {
-  color: var(--color-text-muted);
+  color: var(--admin-muted);
   margin-bottom: 1.25rem;
   font-size: 0.95rem;
 }
@@ -1383,13 +1549,15 @@ footer a:hover {
 }
 
 .form-message-success {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(141, 224, 143, 0.18);
+  color: #bbf0bd;
+  border: 1px solid rgba(141, 224, 143, 0.25);
 }
 
 .form-message-error {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(255, 117, 117, 0.18);
+  color: #ffb0b0;
+  border: 1px solid rgba(255, 117, 117, 0.25);
 }
 
 .form-row {
@@ -1415,22 +1583,22 @@ footer a:hover {
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  color: var(--color-text);
+  background: rgba(67, 211, 255, 0.08);
+  border: 1px solid rgba(67, 211, 255, 0.35);
+  color: #d0ebfb;
   font-family: var(--font-body);
   transition: background var(--transition), border-color var(--transition);
 }
 
 .btn-secondary:hover {
-  background: #e2eef2;
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  background: rgba(67, 211, 255, 0.2);
+  border-color: rgba(67, 211, 255, 0.65);
+  color: #f4fbff;
 }
 
 .label-optional {
   font-weight: 400;
-  color: var(--color-text-muted);
+  color: var(--admin-muted);
   font-size: 0.85rem;
 }
 
@@ -1506,6 +1674,10 @@ footer a:hover {
   .admin-section-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .admin-diagram-grid {
+    grid-template-columns: 1fr;
   }
 }
 

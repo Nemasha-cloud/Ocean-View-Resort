@@ -20,12 +20,16 @@ const Reports = () => {
     const [roomsDb, setRoomsDb] = useState([]);
     const [users, setUsers] = useState([]);
     const [messages, setMessages] = useState([]);
+    const [galleryImages, setGalleryImages] = useState([]);
     const [loading, setLoading] = useState(false);
 
     // Form States
     const [roomForm, setRoomForm] = useState({ roomNumber: '', type: 'Standard', capacity: 2, pricePerNight: 100, imageUrl: '' });
+    const [galleryForm, setGalleryForm] = useState({ imageUrl: '', caption: '' });
     const [roomAddError, setRoomAddError] = useState('');
     const [roomAddSuccess, setRoomAddSuccess] = useState(false);
+    const [galleryError, setGalleryError] = useState('');
+    const [gallerySuccess, setGallerySuccess] = useState(false);
     const [resForm, setResForm] = useState({ guestName: '', address: '', contactNumber: '', checkInDate: '', checkOutDate: '', roomType: 'Standard', guestCount: 1 });
 
     useEffect(() => {
@@ -56,6 +60,9 @@ const Reports = () => {
             } else if (activeTab === 'messages') {
                 const res = await fetch('/api/contact', { headers });
                 if (res.ok) setMessages(await res.json());
+            } else if (activeTab === 'gallery') {
+                const res = await fetch('/api/gallery', { headers });
+                if (res.ok) setGalleryImages(await res.json());
             }
         } catch (err) {
             console.error("Fetch error", err);
@@ -145,14 +152,130 @@ const Reports = () => {
         printWindow.document.close();
     };
 
+    const handleAddGalleryImage = async (e) => {
+        e.preventDefault();
+        setGalleryError('');
+        setGallerySuccess(false);
+
+        const token = localStorage.getItem('token');
+        if (!galleryForm.imageUrl.trim()) {
+            setGalleryError('Image URL is required.');
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/gallery', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    imageUrl: galleryForm.imageUrl.trim(),
+                    caption: galleryForm.caption.trim()
+                })
+            });
+
+            if (res.ok) {
+                setGallerySuccess(true);
+                setGalleryForm({ imageUrl: '', caption: '' });
+                fetchInitialData();
+                setTimeout(() => setGallerySuccess(false), 1600);
+            } else {
+                const text = await res.text();
+                setGalleryError(text || 'Failed to add photo.');
+            }
+        } catch (err) {
+            setGalleryError('Could not connect to server.');
+        }
+    };
+
+    const handleDeleteGalleryImage = async (id) => {
+        if (!window.confirm('Delete this gallery photo?')) return;
+        const token = localStorage.getItem('token');
+        try {
+            const res = await fetch(`/api/gallery/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (res.ok) fetchInitialData();
+        } catch (err) {
+            setGalleryError('Unable to delete image.');
+        }
+    };
+
     // Render Helpers
-    const renderOverview = () => (
+    const renderOverview = () => {
+        const safeReservations = Number(stats.totalReservations ?? 0);
+        const safeGuests = Number(stats.totalGuests ?? 0);
+        const safeRevenue = Number(stats.monthlyRevenue ?? 0);
+
+        const lineA = [12, 18, 22, 38, 24, 42, 30];
+        const lineB = [10, 14, 28, 20, 44, 26, 34];
+        const barsA = [36, 62, 48, 72, 58];
+        const barsB = [44, 30, 66, 40, 55];
+
+        return (
         <>
             <div className="stats-grid">
                 <div className="stat-card"><h3>Total Reservations</h3><div className="stat-value">{stats.totalReservations}</div></div>
                 <div className="stat-card"><h3>Available Rooms</h3><div className="stat-value">{stats.availableRooms}</div></div>
                 <div className="stat-card"><h3>Revenue (Overall)</h3><div className="stat-value">${(stats.monthlyRevenue ?? 0).toLocaleString()}</div></div>
                 <div className="stat-card"><h3>Total Guests</h3><div className="stat-value">{stats.totalGuests}</div></div>
+            </div>
+
+            <div className="admin-diagram-grid">
+                <article className="diagram-card diagram-card-line">
+                    <div className="diagram-head">
+                        <h3>Reservations Trend</h3>
+                        <span>Last 7 days</span>
+                    </div>
+                    <div className="diagram-line">
+                        {lineA.map((point, idx) => (
+                            <span key={`line-a-${idx}`} style={{ height: `${point}%` }} />
+                        ))}
+                    </div>
+                    <p className="diagram-foot">Total reservations: {safeReservations}</p>
+                </article>
+
+                <article className="diagram-card diagram-card-bars">
+                    <div className="diagram-head">
+                        <h3>Guest Volume</h3>
+                        <span>Weekly split</span>
+                    </div>
+                    <div className="diagram-bars">
+                        {barsA.map((bar, idx) => (
+                            <i key={`bar-a-${idx}`} style={{ height: `${bar}%` }} />
+                        ))}
+                    </div>
+                    <p className="diagram-foot">Total guests: {safeGuests}</p>
+                </article>
+
+                <article className="diagram-card diagram-card-line alt">
+                    <div className="diagram-head">
+                        <h3>Occupancy Motion</h3>
+                        <span>Live pulse</span>
+                    </div>
+                    <div className="diagram-line alt">
+                        {lineB.map((point, idx) => (
+                            <span key={`line-b-${idx}`} style={{ height: `${point}%` }} />
+                        ))}
+                    </div>
+                    <p className="diagram-foot">Active rooms: {Number(stats.totalRooms ?? 0) - Number(stats.availableRooms ?? 0)}</p>
+                </article>
+
+                <article className="diagram-card diagram-card-bars alt">
+                    <div className="diagram-head">
+                        <h3>Revenue Flow</h3>
+                        <span>Monthly pattern</span>
+                    </div>
+                    <div className="diagram-bars alt">
+                        {barsB.map((bar, idx) => (
+                            <i key={`bar-b-${idx}`} style={{ height: `${bar}%` }} />
+                        ))}
+                    </div>
+                    <p className="diagram-foot">Revenue: ${safeRevenue.toLocaleString()}</p>
+                </article>
             </div>
 
             <h2 style={{ fontSize: '1.5rem', marginTop: '2rem' }}>Recent Reservations</h2>
@@ -179,6 +302,7 @@ const Reports = () => {
             </div>
         </>
     );
+    };
 
     const renderReservations = () => (
         <div className="admin-table-container">
@@ -291,7 +415,15 @@ const Reports = () => {
         </>
     );
 
-    const renderAddRoom = () => (
+    const renderAddRoom = () => {
+        const typeSuggestions = Array.from(new Set([
+            'Standard',
+            'Deluxe',
+            'Suite',
+            ...roomsDb.map(r => r.type).filter(Boolean)
+        ]));
+
+        return (
         <div className="admin-card add-room-card">
             <h2>Add New Room</h2>
             <p className="add-room-intro">Add a new room to the resort. It will appear on the website and be available for booking.</p>
@@ -304,11 +436,19 @@ const Reports = () => {
                 </div>
                 <div className="form-group">
                     <label>Type</label>
-                    <select value={roomForm.type} onChange={e => setRoomForm({ ...roomForm, type: e.target.value })}>
-                        <option value="Standard">Standard</option>
-                        <option value="Deluxe">Deluxe</option>
-                        <option value="Suite">Suite</option>
-                    </select>
+                    <input
+                        type="text"
+                        list="room-type-suggestions"
+                        value={roomForm.type}
+                        onChange={e => setRoomForm({ ...roomForm, type: e.target.value })}
+                        placeholder="e.g. Deluxe, Family Suite, Ocean Villa"
+                        required
+                    />
+                    <datalist id="room-type-suggestions">
+                        {typeSuggestions.map(type => (
+                            <option key={type} value={type} />
+                        ))}
+                    </datalist>
                 </div>
                 <div className="form-row">
                     <div className="form-group">
@@ -331,8 +471,77 @@ const Reports = () => {
             </form>
         </div>
     );
+    };
 
-    const panelTitle = activeTab === 'addRoom' ? 'Add Room' : activeTab === 'overview' ? 'Dashboard' : activeTab === 'messages' ? 'Messages' : activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
+    const renderGallery = () => (
+        <div className="admin-card add-room-card">
+            <h2>Manage Gallery Photos</h2>
+            <p className="add-room-intro">Add new photo URLs to the public gallery and remove outdated images.</p>
+
+            {gallerySuccess && <p className="form-message form-message-success">Gallery photo added successfully.</p>}
+            {galleryError && <p className="form-message form-message-error">{galleryError}</p>}
+
+            <form onSubmit={handleAddGalleryImage}>
+                <div className="form-group">
+                    <label>Photo URL</label>
+                    <input
+                        type="url"
+                        value={galleryForm.imageUrl}
+                        onChange={e => setGalleryForm({ ...galleryForm, imageUrl: e.target.value })}
+                        placeholder="https://example.com/photo.jpg"
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label>Caption <span className="label-optional">(optional)</span></label>
+                    <input
+                        type="text"
+                        value={galleryForm.caption}
+                        onChange={e => setGalleryForm({ ...galleryForm, caption: e.target.value })}
+                        placeholder="Luxury infinity pool view"
+                    />
+                </div>
+                <div className="form-actions">
+                    <button type="submit" className="btn-primary">Add Photo</button>
+                </div>
+            </form>
+
+            <div className="admin-table-container admin-gallery-table">
+                <table className="admin-table">
+                    <thead>
+                        <tr><th>Preview</th><th>Caption</th><th>URL</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody>
+                        {galleryImages.length === 0 && (
+                            <tr><td colSpan={4} className="admin-table-empty">No gallery photos yet.</td></tr>
+                        )}
+                        {galleryImages.map(img => (
+                            <tr key={img.id}>
+                                <td>
+                                    <img className="admin-gallery-thumb" src={img.imageUrl} alt={img.caption || 'Gallery'} />
+                                </td>
+                                <td>{img.caption || '—'}</td>
+                                <td className="admin-message-cell">{img.imageUrl}</td>
+                                <td>
+                                    <button type="button" className="action-btn btn-delete" onClick={() => handleDeleteGalleryImage(img.id)}>Delete</button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+
+    const panelTitle = activeTab === 'addRoom'
+        ? 'Add Room'
+        : activeTab === 'overview'
+            ? 'Dashboard'
+            : activeTab === 'messages'
+                ? 'Messages'
+                : activeTab === 'gallery'
+                    ? 'Gallery'
+                    : activeTab.charAt(0).toUpperCase() + activeTab.slice(1);
 
     return (
         <div className="admin-layout">
@@ -346,6 +555,7 @@ const Reports = () => {
                         <button type="button" className={`admin-nav-link ${activeTab === 'addRoom' ? 'active' : ''}`} onClick={() => setActiveTab('addRoom')}>Add Room</button>
                         <button type="button" className={`admin-nav-link ${activeTab === 'users' ? 'active' : ''}`} onClick={() => setActiveTab('users')}>Users</button>
                         <button type="button" className={`admin-nav-link ${activeTab === 'messages' ? 'active' : ''}`} onClick={() => setActiveTab('messages')}>Messages</button>
+                        <button type="button" className={`admin-nav-link ${activeTab === 'gallery' ? 'active' : ''}`} onClick={() => setActiveTab('gallery')}>Gallery</button>
                         <button type="button" className={`admin-nav-link ${activeTab === 'help' ? 'active' : ''}`} onClick={() => setActiveTab('help')}>Help</button>
                     </nav>
                     <button type="button" className="admin-nav-logout" onClick={() => { localStorage.clear(); window.location.href = '/login'; }}>Logout</button>
@@ -364,6 +574,7 @@ const Reports = () => {
                 {activeTab === 'addRoom' && renderAddRoom()}
                 {activeTab === 'users' && renderUsers()}
                 {activeTab === 'messages' && renderMessages()}
+                {activeTab === 'gallery' && renderGallery()}
                 {activeTab === 'help' && (
                     <div className="admin-card">
                         <h3>System Guide</h3>
@@ -374,6 +585,7 @@ const Reports = () => {
                             <li><strong>Rooms:</strong> View and manage room inventory. Use <strong>Add Room</strong> to create new rooms.</li>
                             <li><strong>Users:</strong> Staff management.</li>
                             <li><strong>Messages:</strong> View contact form submissions from the website.</li>
+                            <li><strong>Gallery:</strong> Add or delete photos displayed on the public gallery page.</li>
                         </ul>
                     </div>
                 )}
